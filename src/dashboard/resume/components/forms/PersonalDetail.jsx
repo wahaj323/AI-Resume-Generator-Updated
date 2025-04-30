@@ -22,10 +22,10 @@ function PersonalDetail({enabledNext}) {
         enabledNext(false)
         const {name,value}=e.target;
 
-        // setFormData({
-        //     ...formData,
-        //     [name]:value
-        // })
+        setFormData({
+            ...formData,
+            [name]:value
+        })
         setresumeInfo({
             ...resumeInfo,
             [name]:value
@@ -38,6 +38,8 @@ function PersonalDetail({enabledNext}) {
         const data={
             data:formData
         }
+        console.log("Sending data", resumeInfo);
+
         GlobalApi.UpdateResumeDetail(params?.resumeId,data).then(resp=>{
             console.log(resp);
             enabledNext(true);

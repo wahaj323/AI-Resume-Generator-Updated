@@ -9,7 +9,10 @@ const ProfessionalExperiencePreview = ({resumeInfo}) => {
             return <div className='my-5' key={idx}>
                 <h2 className='text-sm font-bold'>{exp?.title}</h2>
                 <h2 className='text-xs flex justify-between'>{exp.companyName}, {exp.city}, {exp.state} <span>{exp.startDate} - {exp.currentlyWorking? "present": exp.endDate}</span></h2>
-                <p className='text-xs my-2'>{exp.workSummary}</p>
+                {/* <p >{exp.workSummary}</p> */}
+                <div className='text-xs my-2' dangerouslySetInnerHTML={{__html:exp.workSummary}}>
+
+                </div>
             </div>
         })}
     </div>
