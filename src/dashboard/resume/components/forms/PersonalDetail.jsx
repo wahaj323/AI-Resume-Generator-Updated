@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ResumeInfoContext } from '../../../../context/ResumeInfoContext'
+import { ResumeInfoContext } from '@/context/ResumeInfoContext'
 import { LoaderCircle } from 'lucide-react';
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
@@ -31,15 +31,13 @@ function PersonalDetail({enabledNext}) {
             [name]:value
         })
     }
-     
+
     const onSave=(e)=>{
         e.preventDefault();
         setLoading(true)
         const data={
             data:formData
         }
-        console.log("Sending data", resumeInfo);
-
         GlobalApi.UpdateResumeDetail(params?.resumeId,data).then(resp=>{
             console.log(resp);
             enabledNext(true);
@@ -59,8 +57,7 @@ function PersonalDetail({enabledNext}) {
             <div className='grid grid-cols-2 mt-5 gap-3'>
                 <div>
                     <label className='text-sm'>First Name</label>
-                    <Input name="firstName" value={resumeInfo?.firstName} onChange={handleInputChange} />
- 
+                    <Input name="firstName" defaultValue={resumeInfo?.firstName} required onChange={handleInputChange}  />
                 </div>
                 <div>
                     <label className='text-sm'>Last Name</label>
