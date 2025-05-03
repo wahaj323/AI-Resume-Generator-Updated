@@ -13,7 +13,7 @@ function Skills() {
   const [skillsList, setSkillsList] = useState([
     {
       name: '',
-      rating: 0, // Default can be 0 or 20
+      rating: 0,
     },
   ])
   const { resumeId } = useParams()
@@ -21,11 +21,11 @@ function Skills() {
   const { resumeInfo, setresumeInfo } = useContext(ResumeInfoContext)
 
   useEffect(() => {
-    resumeInfo && setSkillsList(resumeInfo?.skills)
+    resumeInfo && setSkillsList(resumeInfo?.skills || [])
   }, [])
 
   const handleChange = (index, name, value) => {
-    const newEntries = skillsList.slice()
+    const newEntries = [...skillsList]
     newEntries[index][name] = value
     setSkillsList(newEntries)
   }
@@ -41,7 +41,9 @@ function Skills() {
   }
 
   const RemoveSkills = () => {
-    setSkillsList((skillsList) => skillsList.slice(0, -1))
+    if (skillsList.length > 1) {
+      setSkillsList(skillsList.slice(0, -1))
+    }
   }
 
   const onSave = () => {
@@ -54,9 +56,8 @@ function Skills() {
 
     GlobalApi.UpdateResumeDetail(resumeId, data).then(
       (resp) => {
-        console.log(resp)
         setLoading(false)
-        toast('Details updated !')
+        toast('Details updated!')
       },
       (error) => {
         setLoading(false)
@@ -73,54 +74,59 @@ function Skills() {
   }, [skillsList])
 
   return (
-    <div className="p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-10">
-      <h2 className="font-bold text-lg">Skills</h2>
-      <p>Add Your top professional key skills</p>
+    <div className="p-6 shadow-xl rounded-2xl border-t-4 border-primary mt-10 bg-white">
+      <h2 className="font-bold text-xl mb-1">Skills</h2>
+      <p className="text-sm text-gray-600 mb-6">Add your top professional key skills</p>
 
-      <div>
+      <div className="space-y-4">
         {skillsList.map((item, index) => (
           <div
             key={index}
-            className="flex justify-between mb-2 border rounded-lg p-3"
+            className="flex flex-col md:flex-row md:items-center justify-between gap-4 border rounded-xl p-4 bg-gray-50"
           >
-            <div>
-              <label className="text-xs">Name</label>
+            <div className="flex-1">
+              <label className="text-sm font-medium text-gray-700 mb-1 block">Skill Name</label>
               <Input
                 className="w-full"
-                defaultValue={item.name}
+                value={item.name}
                 onChange={(e) => handleChange(index, 'name', e.target.value)}
+                placeholder="e.g. JavaScript"
               />
             </div>
 
-            <Rating
-              style={{ maxWidth: 120 }}
-              value={item.rating / 20} // Convert 20→1, 40→2, etc.
-              onChange={(v) => handleChange(index, 'rating', v * 20)} // Store as 20, 40, etc.
-            />
+            <div className="flex items-center gap-2 mt-2 md:mt-0">
+              <label className="text-sm text-gray-600">Rating:</label>
+              <Rating
+                style={{ maxWidth: 140 }}
+                value={item.rating / 20}
+                onChange={(v) => handleChange(index, 'rating', v * 20)}
+              />
+            </div>
           </div>
         ))}
       </div>
 
-      <div className="flex justify-between">
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={AddNewSkills}
-            className="text-primary"
-          >
-            + Add More Skill
+      <div className="flex flex-col md:flex-row justify-between items-center mt-6 gap-4">
+        <div className="flex gap-3 w-full md:w-auto">
+          <Button variant="outline" onClick={AddNewSkills} className="w-full md:w-auto">
+            + Add Skill
           </Button>
           <Button
             variant="outline"
             onClick={RemoveSkills}
-            className="text-primary"
+            className="w-full md:w-auto"
+            disabled={skillsList.length === 1}
           >
             - Remove
           </Button>
         </div>
 
-        <Button disabled={loading} onClick={onSave}>
-          {loading ? <LoaderCircle className="animate-spin" /> : 'Save'}
+        <Button
+          className="w-full md:w-auto"
+          disabled={loading}
+          onClick={onSave}
+        >
+          {loading ? <LoaderCircle className="animate-spin w-5 h-5" /> : 'Save'}
         </Button>
       </div>
     </div>

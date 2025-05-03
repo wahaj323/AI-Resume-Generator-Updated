@@ -30,18 +30,8 @@ function RichTextEditor({onRichTextEditorChange,index,defaultValue}) {
     return (
     <div>
       <div className='flex justify-between my-2'>
-        <label className='text-xs'>Summery</label>
-        <Button variant="outline" size="sm" 
-        onClick={GenerateSummeryFromAI}
-        disabled={loading}
-        className="flex gap-2 border-primary text-primary">
-          {loading?
-          <LoaderCircle className='animate-spin'/>:  
-          <>
-           <Brain className='h-4 w-4'/> Generate from AI 
-           </>
-        }
-         </Button>
+        <label className='text-xs'>Summary</label>
+        
       </div>
     <EditorProvider>
       <Editor value={value} onChange={(e)=>{

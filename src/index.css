@@ -14,7 +14,7 @@
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
-  --color-primary: #9f5bff;
+  --color-primary: #1447E6;
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -119,23 +119,48 @@
   }
 }
 
-@media print{
-  #no-print{
-    display: none;
+@media print {
+  #no-print {
+    display: none !important;
   }
 
-  #print-area{
-    display: block;
+  #print-area {
+    display: block !important;
   }
 
-  body{
+  body {
     margin: 0;
     padding: 0;
     box-shadow: none;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    background: white !important;
+  }
+
+  /* Ensures skill bars are not hidden */
+  .skill-bar {
+    display: block !important;
+  }
+
+  /* Top border issue */
+  .border-top-print {
+    border-top: 1px solid #ccc !important;
+  }
+
+  /* Override utility margins if needed */
+  .print\\:mx-0 {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Prevent clipping of elements on multiple pages */
+  * {
+    break-inside: avoid-page;
   }
 }
 
-@page{
-  size: auto;
-  margin: 0mm;
+@page {
+  size: A4;
+  margin: 10mm;
 }

@@ -7,97 +7,151 @@ import { useParams } from 'react-router-dom';
 import GlobalApi from './../../../../../service/GlobalApi';
 import { toast } from 'sonner';
 
-function PersonalDetail({enabledNext}) {
+function PersonalDetail({ enabledNext }) {
+    const params = useParams();
+    const { resumeInfo, setresumeInfo } = useContext(ResumeInfoContext);
+    const [formData, setFormData] = useState({});
+    const [loading, setLoading] = useState(false);
 
-    const params=useParams();
-    const {resumeInfo,setresumeInfo}=useContext(ResumeInfoContext)
+    useEffect(() => {
+        // Initialize form data with resumeInfo if it exists
+        if (resumeInfo) {
+            setFormData({
+                firstName: resumeInfo.firstName || '',
+                lastName: resumeInfo.lastName || '',
+                jobTitle: resumeInfo.jobTitle || '',
+                address: resumeInfo.address || '',
+                phone: resumeInfo.phone || '',
+                email: resumeInfo.email || ''
+            });
+        }
+    }, [resumeInfo]);
 
-    const [formData,setFormData]=useState();
-    const [loading,setLoading]=useState(false);
-    useEffect(()=>{
-        console.log("---",resumeInfo)
-    },[])
+    const handleInputChange = (e) => {
+        enabledNext(false);
+        const { name, value } = e.target;
 
-    const handleInputChange=(e)=>{
-        enabledNext(false)
-        const {name,value}=e.target;
-
-        setFormData({
+        const updatedFormData = {
             ...formData,
-            [name]:value
-        })
+            [name]: value
+        };
+
+        setFormData(updatedFormData);
         setresumeInfo({
             ...resumeInfo,
-            [name]:value
-        })
-    }
+            [name]: value
+        });
+    };
 
-    const onSave=(e)=>{
+    const onSave = (e) => {
         e.preventDefault();
-        setLoading(true)
-        const data={
-            data:formData
-        }
-        GlobalApi.UpdateResumeDetail(params?.resumeId,data).then(resp=>{
-            console.log(resp);
-            enabledNext(true);
-            setLoading(false);
-            toast("Details updated")
-        },(error)=>{
-            setLoading(false);
-        })
-        
-    }
-  return (
-    <div className='p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-10'>
-        <h2 className='font-bold text-lg'>Personal Detail</h2>
-        <p>Get Started with the basic information</p>
+        setLoading(true);
+        const data = {
+            data: formData
+        };
 
-        <form onSubmit={onSave}>
-            <div className='grid grid-cols-2 mt-5 gap-3'>
-                <div>
-                    <label className='text-sm'>First Name</label>
-                    <Input name="firstName" defaultValue={resumeInfo?.firstName} required onChange={handleInputChange}  />
-                </div>
-                <div>
-                    <label className='text-sm'>Last Name</label>
-                    <Input name="lastName" required onChange={handleInputChange} 
-                    defaultValue={resumeInfo?.lastName} />
-                </div>
-                <div className='col-span-2'>
-                    <label className='text-sm'>Job Title</label>
-                    <Input name="jobTitle" required 
-                    defaultValue={resumeInfo?.jobTitle}
-                    onChange={handleInputChange}  />
-                </div>
-                <div className='col-span-2'>
-                    <label className='text-sm'>Address</label>
-                    <Input name="address" required 
-                    defaultValue={resumeInfo?.address}
-                    onChange={handleInputChange}  />
-                </div>
-                <div>
-                    <label className='text-sm'>Phone</label>
-                    <Input name="phone" required 
-                    defaultValue={resumeInfo?.phone}
-                    onChange={handleInputChange}  />
-                </div>
-                <div>
-                    <label className='text-sm'>Email</label>
-                    <Input name="email" required 
-                    defaultValue={resumeInfo?.email}
-                    onChange={handleInputChange}  />
-                </div>
+        GlobalApi.UpdateResumeDetail(params?.resumeId, data)
+            .then(resp => {
+                enabledNext(true);
+                setLoading(false);
+                toast.success("Details updated successfully!");
+            })
+            .catch(error => {
+                setLoading(false);
+                toast.error("Error updating details");
+            });
+    };
+
+    return (
+        <div className='p-6 shadow-lg rounded-lg border-t-4 border-t-primary bg-white'>
+            <div className='mb-6'>
+                <h2 className='text-2xl font-bold text-gray-800 mb-1'>Personal Details</h2>
+                <p className='text-gray-600'>Get started with your basic information</p>
             </div>
-            <div className='mt-3 flex justify-end'>
-                <Button type="submit"
-                disabled={loading}>
-                    {loading?<LoaderCircle className='animate-spin' />:'Save'}
+
+            <form onSubmit={onSave}>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4'>
+                    <div className='space-y-1'>
+                        <label className='block text-sm font-medium text-gray-700'>First Name*</label>
+                        <Input 
+                            name="firstName" 
+                            value={formData.firstName || ''} 
+                            required 
+                            onChange={handleInputChange} 
+                            placeholder="John"
+                        />
+                    </div>
+                    <div className='space-y-1'>
+                        <label className='block text-sm font-medium text-gray-700'>Last Name*</label>
+                        <Input 
+                            name="lastName" 
+                            value={formData.lastName || ''} 
+                            required 
+                            onChange={handleInputChange} 
+                            placeholder="Doe"
+                        />
+                    </div>
+                    <div className='md:col-span-2 space-y-1'>
+                        <label className='block text-sm font-medium text-gray-700'>Job Title*</label>
+                        <Input 
+                            name="jobTitle" 
+                            value={formData.jobTitle || ''} 
+                            required 
+                            onChange={handleInputChange} 
+                            placeholder="Software Engineer"
+                        />
+                    </div>
+                    <div className='md:col-span-2 space-y-1'>
+                        <label className='block text-sm font-medium text-gray-700'>Address*</label>
+                        <Input 
+                            name="address" 
+                            value={formData.address || ''} 
+                            required 
+                            onChange={handleInputChange} 
+                            placeholder="123 Main St, City, Country"
+                        />
+                    </div>
+                    <div className='space-y-1'>
+                        <label className='block text-sm font-medium text-gray-700'>Phone*</label>
+                        <Input 
+                            name="phone" 
+                            value={formData.phone || ''} 
+                            required 
+                            onChange={handleInputChange} 
+                            placeholder="+1 (555) 123-4567"
+                            type="tel"
+                        />
+                    </div>
+                    <div className='space-y-1'>
+                        <label className='block text-sm font-medium text-gray-700'>Email*</label>
+                        <Input 
+                            name="email" 
+                            value={formData.email || ''} 
+                            required 
+                            onChange={handleInputChange} 
+                            placeholder="john.doe@example.com"
+                            type="email"
+                        />
+                    </div>
+                </div>
+
+                <div className='flex justify-end mt-6'>
+                    <Button 
+                        type="submit"
+                        disabled={loading}
+                        className="min-w-[120px]"
+                    >
+                        {loading ? (
+                            <>
+                                <LoaderCircle className="h-4 w-4 mr-2 animate-spin" />
+                                Saving...
+                            </>
+                        ) : 'Save Changes'}
                     </Button>
-            </div>
-        </form>
-    </div>
-  )
+                </div>
+            </form>
+        </div>
+    );
 }
 
-export default PersonalDetail
+export default PersonalDetail;

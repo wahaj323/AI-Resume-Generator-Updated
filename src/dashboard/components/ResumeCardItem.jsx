@@ -1,6 +1,6 @@
 import { Loader2, MoreVertical } from 'lucide-react';
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,11 +36,11 @@ function ResumeCardItem({ resume, refreshData }) {
     setLoading(true);
     try {
       await GlobalApi.DeleteResumeById(resume?.documentId);
-      toast.success('Resume Deleted!');
+      toast.success('Resume Deleted Successfully!');
       await refreshData();
       if (isMounted.current) setOpenAlert(false);
     } catch (error) {
-      toast.error('Failed to delete resume.');
+      toast.error('Failed to delete resume. Please try again later.');
     } finally {
       if (isMounted.current) setLoading(false);
     }
@@ -48,9 +48,9 @@ function ResumeCardItem({ resume, refreshData }) {
 
   const handleDownload = () => {
     // Implement actual download logic here
-    toast.info('Download feature coming soon!');
+    // toast.info('Download feature coming soon!');
     // Example implementation:
-    // window.open(`/api/resumes/${resume.documentId}/download`, '_blank');
+    <Link to={`/dashboard/resume/${resume.documentId}/edit`}></Link>;
   };
 
   return (
@@ -62,7 +62,7 @@ function ResumeCardItem({ resume, refreshData }) {
           style={{ borderColor: resume?.themeColor }}
         >
           <div className="flex items-center justify-center h-[180px]">
-            <img src="/cv.png" width={80} height={80} alt="Resume Preview" />
+            <img src="https://cdn-icons-png.flaticon.com/512/6614/6614677.png" width={80} height={80} alt="Resume Preview" />
           </div>
         </div>
       </Link>
@@ -85,7 +85,7 @@ function ResumeCardItem({ resume, refreshData }) {
             <DropdownMenuItem onClick={() => navigate(`/my-resume/${resume.documentId}/view`)}>
               View
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleDownload}>
+            <DropdownMenuItem onClick={() => navigate(`/my-resume/${resume.documentId}/view`)}>
               Download
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setOpenAlert(true)}>
@@ -107,11 +107,7 @@ function ResumeCardItem({ resume, refreshData }) {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={onDelete} disabled={loading}>
-              {loading ? (
-                <Loader2 className="animate-spin h-4 w-4" />
-              ) : (
-                'Delete'
-              )}
+              {loading ? <Loader2 className="animate-spin h-4 w-4" /> : 'Delete'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

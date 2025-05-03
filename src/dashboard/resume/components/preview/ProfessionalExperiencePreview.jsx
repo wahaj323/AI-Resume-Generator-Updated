@@ -1,20 +1,56 @@
 import React from 'react'
 
-const ProfessionalExperiencePreview = ({resumeInfo}) => {
+const ProfessionalExperiencePreview = ({ resumeInfo }) => {
   return (
-    <div className='my-6 '>
-        <h2 className='text-center font-bold text-sm mb-2 ' style={{color: resumeInfo?.themeColor}}>Professional Experience</h2>
-        <hr className='border-[1px] my-2' style={{borderColor: resumeInfo?.themeColor}} />
-        {resumeInfo?.experience.map((exp, idx) => {
-            return <div className='my-5' key={idx}>
-                <h2 className='text-sm font-bold'>{exp?.title}</h2>
-                <h2 className='text-xs flex justify-between'>{exp.companyName}, {exp.city}, {exp.state} <span>{exp.startDate} - {exp.currentlyWorking? "present": exp.endDate}</span></h2>
-                {/* <p >{exp.workSummary}</p> */}
-                <div className='text-xs my-2' dangerouslySetInnerHTML={{__html:exp.workSummary}}>
+    <div className="mb-10">
+      {/* Section Header */}
+      <div className="mb-6">
+        <h2 
+          className="text-xl font-bold text-center uppercase tracking-wider mb-2"
+          style={{ color: resumeInfo?.themeColor || '#4f46e5' }}
+        >
+          Professional Experience
+        </h2>
+        <hr 
+          className="h-1 bg-opacity-50 my-2" 
+          style={{ 
+            backgroundColor: resumeInfo?.themeColor,
+            border: 'none'
+          }} 
+        />
+      </div>
 
-                </div>
+      {/* Experience Items */}
+      <div className="space-y-8">
+        {resumeInfo?.experience?.map((exp, idx) => (
+          <div key={idx} className="pl-4 border-l-4"
+            style={{
+              borderColor: resumeInfo?.themeColor
+            }}>
+            
+            {/* Job Title */}
+            <h3 className="text-lg font-semibold mb-1">{exp?.title}</h3>
+            
+            {/* Company and Location */}
+            <div className="flex flex-col sm:flex-row sm:justify-between mb-2">
+              <span className="text-md font-medium text-gray-700">
+                {exp.companyName}{exp.city && `, ${exp.city}`}{exp.state && `, ${exp.state}`}
+              </span>
+              <span className="text-sm text-gray-600">
+                {exp.startDate} — {exp.currentlyWorking ? 'Present' : exp.endDate}
+              </span>
             </div>
-        })}
+
+            {/* Work Summary */}
+            {exp.workSummary && (
+              <div 
+                className="prose prose-sm max-w-none text-gray-700 mt-2"
+                dangerouslySetInnerHTML={{ __html: exp.workSummary }}
+              />
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
